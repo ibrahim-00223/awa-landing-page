@@ -153,9 +153,19 @@ button {
   gap: 16px;
 }
 
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
 .navbar-logo {
   height: 34px;
-  width: auto;
+  width: 34px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .navbar-logo-text {

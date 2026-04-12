@@ -1,5 +1,6 @@
 import { footer } from '../i18n/fr';
 import { bm } from '../i18n/bm';
+import logo from '../assets/awa_logo_(png).png';
 import WhatsAppButton from './WhatsAppButton';
 import './Footer.css';
 
@@ -8,7 +9,10 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__brand">
-          <span className="footer__logo-text">AWA</span>
+          <div className="footer__logo-wrap">
+            <img src={logo} alt="AWA" className="footer__logo" />
+            <span className="footer__logo-text">AWA</span>
+          </div>
           <p className="footer__tagline">{footer.tagline}</p>
           <p className="footer__baseline accent-gold">{bm.baseline}</p>
         </div>

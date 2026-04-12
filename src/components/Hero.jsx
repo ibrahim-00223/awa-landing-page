@@ -1,5 +1,6 @@
 import { bm } from '../i18n/bm';
 import { hero } from '../i18n/fr';
+import logo from '../assets/awa_logo_(png).png';
 import WhatsAppButton from './WhatsAppButton';
 import './Hero.css';
 
@@ -8,6 +9,7 @@ export default function Hero() {
     <section className="hero" id="hero">
       <div className="container hero__inner">
         <div className="hero__content">
+          <img src={logo} alt="AWA" className="hero__logo" />
           <p className="hero__bambara">{bm.heroHeadline}</p>
           <h1 className="hero__title">
             <span className="accent-gold">AWA</span> comprend tes documents.{' '}
