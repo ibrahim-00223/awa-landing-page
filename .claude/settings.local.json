@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\ibrah\\\\OneDrive\\\\Documents\\\\Ibrah's Builder\\\\awa_landing_page\\\\src\\\\i18n\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\ibrah\\\\OneDrive\\\\Documents\\\\Ibrah's Builder\\\\awa_landing_page\\\\src\\\\components\")",
+      "Bash(git --version)",
+      "Bash(git config:*)"
+    ]
+  }
+}
