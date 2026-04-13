@@ -1,13 +1,29 @@
 .footer {
   background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top-edge shimmer */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.3), transparent);
+  pointer-events: none;
 }
 
 .footer__inner {
   display: flex;
   flex-direction: column;
   gap: 28px;
-  padding-block: 48px;
+  padding-block: 56px;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
@@ -22,42 +38,52 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .footer__logo {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 9px;
   object-fit: cover;
   flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
 }
 
 .footer__logo-text {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--color-gold);
-  letter-spacing: -0.02em;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: var(--gr-gold-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footer__tagline {
   font-size: 0.875rem;
   color: var(--color-text-muted);
-  max-width: 320px;
-  line-height: 1.55;
+  max-width: 300px;
+  line-height: 1.6;
 }
 
 .footer__baseline {
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-top: 6px;
-  letter-spacing: 0.04em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 8px;
+  letter-spacing: 0.06em;
+  background: var(--gr-gold-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ─── Bottom bar ─── */
 .footer__bottom {
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--glass-border);
   padding-block: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .footer__bottom-inner {
@@ -75,7 +101,7 @@
 }
 
 .footer__copyright {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--color-text-dim);
 }
 
@@ -86,7 +112,7 @@
 }
 
 .footer__link {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--color-text-dim);
   transition: color 0.2s;
 }

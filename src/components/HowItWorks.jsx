@@ -13,7 +13,7 @@ export default function HowItWorks() {
         <header className="how__header">
           <span className="label-bambara">{bm.howItWorks}</span>
           <h2 className="section-title">{howItWorks.sectionLabel}</h2>
-          <hr className="section-rule" />
+          <p>Simple comme envoyer un message. Puissant comme un expert à tes côtés.</p>
         </header>
 
         <ol className="how__steps">

@@ -2,107 +2,218 @@
   min-height: 100svh;
   display: flex;
   align-items: center;
-  padding-top: 80px; /* navbar height */
-  padding-bottom: 48px;
+  padding-top: 80px;
+  padding-bottom: 60px;
   position: relative;
   overflow: hidden;
 }
 
-/* Subtle radial glow behind hero content */
+/* ── Radial glow orbs ── */
 .hero::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 30% 50%, rgba(201, 168, 76, 0.07) 0%, transparent 70%);
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.10) 0%, transparent 70%);
+  top: -100px;
+  left: -200px;
   pointer-events: none;
+  filter: blur(40px);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 211, 102, 0.06) 0%, transparent 70%);
+  bottom: -100px;
+  right: -100px;
+  pointer-events: none;
+  filter: blur(60px);
 }
 
 .hero__inner {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 48px;
+  gap: 56px;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 900px) {
   .hero__inner {
-    grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 72px;
   }
 }
 
 /* ─── Content ─── */
 .hero__logo {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 16px;
   object-fit: cover;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.4);
 }
 
 .hero__bambara {
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-size: clamp(0.85rem, 1.5vw, 1rem);
   font-weight: 700;
   color: var(--color-gold);
-  letter-spacing: 0.04em;
-  margin-bottom: 16px;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero__bambara::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  background: var(--color-gold);
+  border-radius: 2px;
+  opacity: 0.6;
 }
 
 .hero__title {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
   color: var(--color-text);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+/* Gradient clip on the keyword */
+.hero__title .text-gradient-gold {
+  display: inline;
 }
 
 .hero__description {
   font-size: clamp(1rem, 1.5vw, 1.125rem);
   color: var(--color-text-muted);
-  max-width: 500px;
-  margin-bottom: 32px;
+  max-width: 480px;
+  margin-bottom: 36px;
+  line-height: 1.7;
 }
 
 .hero__cta {
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .hero__baseline {
-  font-size: 0.875rem;
+  font-size: 0.82rem;
   color: var(--color-text-dim);
-  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+.hero__baseline .accent-gold {
+  font-weight: 600;
+}
+
+/* ─── Social proof strip ─── */
+.hero__proof {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 99px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  width: fit-content;
+  margin-top: 28px;
+}
+
+.hero__proof-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-whatsapp);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--color-whatsapp-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+.hero__proof-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.hero__proof-text strong {
+  color: var(--color-text);
+  font-weight: 700;
 }
 
 /* ─── Phone Mockup ─── */
 .hero__visual {
   display: flex;
   justify-content: center;
+  position: relative;
 }
 
 @media (min-width: 900px) {
-  .hero__visual {
-    justify-content: flex-end;
-  }
+  .hero__visual { justify-content: flex-end; }
+}
+
+/* Glow behind phone */
+.hero__visual::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .hero__phone {
-  width: 260px;
-  border-radius: 32px;
-  background: var(--color-surface);
-  border: 1.5px solid var(--color-border);
-  padding: 24px 16px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  width: 264px;
+  border-radius: 36px;
+  background: rgba(14, 14, 14, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 14px;
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+/* phone top notch */
+.hero__phone::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 5px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+  margin: 0 auto 16px;
 }
 
 .hero__phone-screen {
-  background: #0e1117;
-  border-radius: 18px;
-  padding: 16px 12px;
+  background: #0b0f11;
+  border-radius: 20px;
+  padding: 14px 10px;
   min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
 .hero__chat {
@@ -112,23 +223,24 @@
 }
 
 .hero__chat-bubble {
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  line-height: 1.45;
-  max-width: 90%;
+  padding: 10px 13px;
+  border-radius: 14px;
+  font-size: 0.775rem;
+  line-height: 1.5;
+  max-width: 92%;
 }
 
 .hero__chat-bubble--in {
-  background: var(--color-surface-2);
-  color: var(--color-text-muted);
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.6);
   border-bottom-left-radius: 4px;
   align-self: flex-start;
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
 .hero__chat-bubble--out {
   background: #005c4b;
-  color: #e9f5f2;
+  color: #dff5ec;
   border-bottom-right-radius: 4px;
   align-self: flex-end;
 }
@@ -151,16 +263,16 @@
   width: 3px;
   background: var(--color-whatsapp);
   border-radius: 2px;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
-.hero__audio-bar span:nth-child(1)  { height: 8px; }
-.hero__audio-bar span:nth-child(2)  { height: 14px; }
-.hero__audio-bar span:nth-child(3)  { height: 10px; }
-.hero__audio-bar span:nth-child(4)  { height: 18px; }
-.hero__audio-bar span:nth-child(5)  { height: 12px; }
-.hero__audio-bar span:nth-child(6)  { height: 16px; }
-.hero__audio-bar span:nth-child(7)  { height: 8px; }
-.hero__audio-bar span:nth-child(8)  { height: 14px; }
-.hero__audio-bar span:nth-child(9)  { height: 10px; }
-.hero__audio-bar span:nth-child(10) { height: 6px; }
+.hero__audio-bar span:nth-child(1)  { height: 7px; }
+.hero__audio-bar span:nth-child(2)  { height: 13px; }
+.hero__audio-bar span:nth-child(3)  { height: 9px; }
+.hero__audio-bar span:nth-child(4)  { height: 17px; }
+.hero__audio-bar span:nth-child(5)  { height: 11px; }
+.hero__audio-bar span:nth-child(6)  { height: 15px; }
+.hero__audio-bar span:nth-child(7)  { height: 7px; }
+.hero__audio-bar span:nth-child(8)  { height: 13px; }
+.hero__audio-bar span:nth-child(9)  { height: 9px; }
+.hero__audio-bar span:nth-child(10) { height: 5px; }
