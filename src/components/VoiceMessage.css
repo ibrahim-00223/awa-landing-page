@@ -1,0 +1,117 @@
+/* ── Voice message bubble ── */
+.voice-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #005c4b;
+  border-radius: 14px 14px 4px 14px;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  max-width: 220px;
+  align-self: flex-end;
+  transition: background-color 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* inner shimmer */
+.voice-msg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.voice-msg:hover {
+  background: #006e59;
+}
+
+.voice-msg--playing {
+  background: #00735f;
+}
+
+/* Avatar */
+.voice-msg__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.15);
+}
+
+/* Play / Pause button */
+.voice-msg__play {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.voice-msg:hover .voice-msg__play {
+  background: rgba(255,255,255,0.26);
+}
+
+.voice-msg__play:active {
+  transform: scale(0.92);
+}
+
+/* Waveform */
+.voice-msg__wave {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  flex: 1;
+  height: 28px;
+}
+
+.voice-msg__bar {
+  display: inline-block;
+  width: 3px;
+  height: var(--bar-h, 8px);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.voice-msg__bar--played {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Animate bars height when playing */
+.voice-msg__bar--animating {
+  animation: bar-bounce 0.6s ease-in-out infinite alternate;
+  animation-delay: var(--bar-delay, 0ms);
+}
+
+@keyframes bar-bounce {
+  from { height: calc(var(--bar-h, 8px) * 0.5); }
+  to   { height: var(--bar-h, 8px); }
+}
+
+/* Timer */
+.voice-msg__time {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
