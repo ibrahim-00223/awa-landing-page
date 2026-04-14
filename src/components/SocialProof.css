@@ -1,0 +1,116 @@
+.social-proof {
+  padding-block: 28px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle gradient shimmer */
+.social-proof::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(201, 168, 76, 0.03) 30%,
+    rgba(201, 168, 76, 0.03) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.social-proof .container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .social-proof .container {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0;
+  }
+}
+
+/* ── Stats ── */
+.social-proof__stats {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.social-proof__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.social-proof__stat-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: var(--gr-gold-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.social-proof__stat-label {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ── Vertical divider ── */
+.social-proof__divider {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .social-proof__divider {
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: var(--color-border);
+    margin-inline: 40px;
+    flex-shrink: 0;
+  }
+}
+
+/* ── Trust badges ── */
+.social-proof__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.social-proof__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.social-proof__badge:hover {
+  border-color: var(--color-border-gold);
+  color: var(--color-text);
+}

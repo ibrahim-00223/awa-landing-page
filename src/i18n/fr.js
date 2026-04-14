@@ -3,6 +3,7 @@ export const WHATSAPP_LINK = 'https://wa.me/+1-555-144-9033';
 
 // ─── Navigation ──────────────────────────────────────────────────────────────
 export const nav = {
+  features: 'Fonctionnalités',
   howItWorks: 'Comment ça marche',
   pricing: 'Tarifs',
   testimonials: 'Témoignages',

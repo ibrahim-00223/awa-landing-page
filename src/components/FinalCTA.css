@@ -1,0 +1,104 @@
+.final-cta {
+  position: relative;
+  overflow: hidden;
+  padding-block: 100px 110px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+/* Orb glows */
+.final-cta__orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+.final-cta__orb--gold {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.12) 0%, transparent 70%);
+  top: -150px; left: 50%;
+  transform: translateX(-50%);
+}
+
+.final-cta__orb--green {
+  width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(37, 211, 102, 0.08) 0%, transparent 70%);
+  bottom: -100px; right: -100px;
+}
+
+.final-cta__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.final-cta .label-bambara {
+  margin-bottom: 20px;
+}
+
+/* ── Title ── */
+.final-cta__title {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+/* ── Subtitle ── */
+.final-cta__sub {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  color: var(--color-text-muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+/* ── Actions ── */
+.final-cta__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+/* Secondary ghost button */
+.final-cta__secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 14px 22px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  transition: color 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.final-cta__secondary:hover {
+  color: var(--color-text);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
+}
+
+.final-cta__secondary svg {
+  color: var(--color-whatsapp);
+  font-size: 1.15em;
+}
+
+/* ── Note ── */
+.final-cta__note {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+  letter-spacing: 0.02em;
+}
