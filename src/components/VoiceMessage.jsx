@@ -3,27 +3,46 @@ import audioSrc from '../assets/awa-voice.wav';
 import logo from '../assets/awa_logo_(png).png';
 import './VoiceMessage.css';
 
-// Waveform bar heights — fixed pattern mimicking a real voice message
-const BARS = [4, 8, 14, 6, 18, 10, 22, 7, 16, 12, 20, 8, 14, 5, 18, 10, 24, 6, 16, 9, 20, 7, 14, 11, 18];
+// 36 bars — richer waveform pattern
+const BARS = [
+  6, 12, 20, 8, 28, 14, 32, 10, 24, 18, 30, 8, 22, 6, 26, 16,
+  34, 10, 20, 14, 28, 8, 18, 12, 26, 10, 22, 16, 30, 8, 20, 12,
+  24, 6, 18, 10
+];
 
-export default function VoiceMessage() {
-  const [playing, setPlaying]       = useState(false);
-  const [progress, setProgress]     = useState(0);   // 0–1
-  const [duration, setDuration]     = useState(null);
+export default function VoiceMessage({ autoPlay = false }) {
+  const [playing, setPlaying]   = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(null);
   const audioRef = useRef(null);
   const rafRef   = useRef(null);
 
   useEffect(() => {
     const audio = audioRef.current;
-    const onLoaded = () => setDuration(audio.duration);
-    audio.addEventListener('loadedmetadata', onLoaded);
-    audio.addEventListener('ended', handleEnd);
+    const onMeta = () => setDuration(audio.duration);
+    const onEnd  = () => { setPlaying(false); setProgress(0); cancelAnimationFrame(rafRef.current); };
+    audio.addEventListener('loadedmetadata', onMeta);
+    audio.addEventListener('ended', onEnd);
+
+    // Autoplay attempt after metadata loads
+    if (autoPlay) {
+      const tryPlay = () => {
+        audio.play().then(() => {
+          setPlaying(true);
+          rafRef.current = requestAnimationFrame(tick);
+        }).catch(() => {
+          // Browser blocked — visual animation still runs
+        });
+      };
+      audio.addEventListener('loadedmetadata', tryPlay, { once: true });
+    }
+
     return () => {
-      audio.removeEventListener('loadedmetadata', onLoaded);
-      audio.removeEventListener('ended', handleEnd);
+      audio.removeEventListener('loadedmetadata', onMeta);
+      audio.removeEventListener('ended', onEnd);
       cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [autoPlay]);
 
   function tick() {
     const audio = audioRef.current;
@@ -32,19 +51,15 @@ export default function VoiceMessage() {
     if (!audio.paused) rafRef.current = requestAnimationFrame(tick);
   }
 
-  function handleEnd() {
-    setPlaying(false);
-    setProgress(0);
-    cancelAnimationFrame(rafRef.current);
-  }
-
-  function toggle() {
+  function toggle(e) {
+    e.stopPropagation();
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
-      audio.play();
-      setPlaying(true);
-      rafRef.current = requestAnimationFrame(tick);
+      audio.play().then(() => {
+        setPlaying(true);
+        rafRef.current = requestAnimationFrame(tick);
+      });
     } else {
       audio.pause();
       setPlaying(false);
@@ -54,40 +69,44 @@ export default function VoiceMessage() {
 
   function fmt(s) {
     if (!s || isNaN(s)) return '0:00';
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60).toString().padStart(2, '0');
-    return `${m}:${sec}`;
+    return `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
   }
 
-  const elapsed = duration ? duration * progress : 0;
   const playedBars = Math.round(progress * BARS.length);
+  const elapsed    = (duration || 0) * progress;
 
   return (
-    <div className={`voice-msg ${playing ? 'voice-msg--playing' : ''}`} onClick={toggle} role="button" aria-label={playing ? 'Pause' : 'Écouter la réponse d\'AWA'}>
-      {/* Hidden audio */}
-      <audio ref={audioRef} src={audioSrc} preload="metadata" />
+    <div
+      className={`voice-msg ${playing ? 'voice-msg--playing' : ''}`}
+      onClick={toggle}
+      role="button"
+      aria-label={playing ? 'Pause' : "Écouter la réponse d'AWA"}
+    >
+      <audio ref={audioRef} src={audioSrc} preload="auto" />
 
-      {/* AWA avatar */}
+      {/* Glow ring — pulsing when playing */}
+      {playing && <span className="voice-msg__ring" aria-hidden="true" />}
+
+      {/* Avatar */}
       <img src={logo} alt="AWA" className="voice-msg__avatar" />
 
-      {/* Play / Pause button */}
+      {/* Play/Pause */}
       <button className="voice-msg__play" aria-hidden="true" tabIndex={-1}>
-        {playing
-          ? <PauseIcon />
-          : <PlayIcon />
-        }
+        {playing ? <PauseIcon /> : <PlayIcon />}
       </button>
 
       {/* Waveform */}
-      <div className="voice-msg__wave">
+      <div className="voice-msg__wave" aria-hidden="true">
         {BARS.map((h, i) => (
           <span
             key={i}
-            className={`voice-msg__bar ${i < playedBars ? 'voice-msg__bar--played' : ''} ${playing ? 'voice-msg__bar--animating' : ''}`}
-            style={{
-              '--bar-h': `${h}px`,
-              '--bar-delay': `${(i % 8) * 60}ms`,
-            }}
+            className={[
+              'voice-msg__bar',
+              i < playedBars ? 'voice-msg__bar--played' : '',
+              // Always animate — gives life even before audio starts
+              'voice-msg__bar--animating',
+            ].join(' ')}
+            style={{ '--bar-h': `${h}px`, '--bar-delay': `${(i % 10) * 55}ms` }}
           />
         ))}
       </div>
@@ -102,17 +121,16 @@ export default function VoiceMessage() {
 
 function PlayIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
-      <path d="M3 2.5l8 4.5-8 4.5V2.5z"/>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M4 3l10 5-10 5V3z" />
     </svg>
   );
 }
-
 function PauseIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
-      <rect x="2.5" y="2" width="3" height="10" rx="1"/>
-      <rect x="8.5" y="2" width="3" height="10" rx="1"/>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <rect x="3" y="2" width="3.5" height="12" rx="1.2" />
+      <rect x="9.5" y="2" width="3.5" height="12" rx="1.2" />
     </svg>
   );
 }
