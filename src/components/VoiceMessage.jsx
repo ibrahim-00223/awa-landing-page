@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import audioSrc from '../assets/awa-voice.wav';
 import logo from '../assets/awa_logo_(png).png';
 import './VoiceMessage.css';
@@ -7,50 +7,89 @@ import './VoiceMessage.css';
 const BARS = [
   6, 12, 20, 8, 28, 14, 32, 10, 24, 18, 30, 8, 22, 6, 26, 16,
   34, 10, 20, 14, 28, 8, 18, 12, 26, 10, 22, 16, 30, 8, 20, 12,
-  24, 6, 18, 10
+  24, 6, 18, 10,
 ];
 
 export default function VoiceMessage({ autoPlay = false }) {
   const [playing, setPlaying]   = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(null);
-  const audioRef = useRef(null);
-  const rafRef   = useRef(null);
+  const audioRef       = useRef(null);
+  const rafRef         = useRef(null);
+  const interactedRef  = useRef(false);  // has the user touched the page?
+  const audioReadyRef  = useRef(false);  // has metadata loaded?
+
+  // ── Tick: update progress bar on every frame ──
+  const tick = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    setProgress(audio.currentTime / (audio.duration || 1));
+    if (!audio.paused) rafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  // ── Attempt play when both conditions are met ──
+  const tryAutoPlay = useCallback(() => {
+    if (!autoPlay) return;
+    if (!interactedRef.current || !audioReadyRef.current) return;
+    const audio = audioRef.current;
+    if (!audio || !audio.paused) return;
+
+    audio.play()
+      .then(() => {
+        setPlaying(true);
+        rafRef.current = requestAnimationFrame(tick);
+      })
+      .catch(() => { /* browser still blocking — user can click manually */ });
+  }, [autoPlay, tick]);
 
   useEffect(() => {
     const audio = audioRef.current;
-    const onMeta = () => setDuration(audio.duration);
-    const onEnd  = () => { setPlaying(false); setProgress(0); cancelAnimationFrame(rafRef.current); };
+
+    // ── Standard events ──
+    const onMeta = () => {
+      setDuration(audio.duration);
+      audioReadyRef.current = true;
+      tryAutoPlay();
+    };
+    const onEnd = () => {
+      setPlaying(false);
+      setProgress(0);
+      cancelAnimationFrame(rafRef.current);
+    };
+
     audio.addEventListener('loadedmetadata', onMeta);
     audio.addEventListener('ended', onEnd);
 
-    // Autoplay attempt after metadata loads
+    // Already loaded (cached)
+    if (audio.readyState >= 1) {
+      setDuration(audio.duration);
+      audioReadyRef.current = true;
+    }
+
+    // ── Listen for ANY user gesture on the page ──
+    const EVENTS = ['mousemove', 'mousedown', 'touchstart', 'keydown', 'scroll', 'pointerdown'];
+
+    const onInteraction = () => {
+      if (interactedRef.current) return;
+      interactedRef.current = true;
+      // Remove all listeners — only need the first event
+      EVENTS.forEach(ev => document.removeEventListener(ev, onInteraction, true));
+      tryAutoPlay();
+    };
+
     if (autoPlay) {
-      const tryPlay = () => {
-        audio.play().then(() => {
-          setPlaying(true);
-          rafRef.current = requestAnimationFrame(tick);
-        }).catch(() => {
-          // Browser blocked — visual animation still runs
-        });
-      };
-      audio.addEventListener('loadedmetadata', tryPlay, { once: true });
+      EVENTS.forEach(ev => document.addEventListener(ev, onInteraction, { capture: true, once: false }));
     }
 
     return () => {
       audio.removeEventListener('loadedmetadata', onMeta);
       audio.removeEventListener('ended', onEnd);
+      EVENTS.forEach(ev => document.removeEventListener(ev, onInteraction, true));
       cancelAnimationFrame(rafRef.current);
     };
-  }, [autoPlay]);
+  }, [autoPlay, tryAutoPlay]);
 
-  function tick() {
-    const audio = audioRef.current;
-    if (!audio) return;
-    setProgress(audio.currentTime / (audio.duration || 1));
-    if (!audio.paused) rafRef.current = requestAnimationFrame(tick);
-  }
-
+  // ── Manual toggle (click on bubble) ──
   function toggle(e) {
     e.stopPropagation();
     const audio = audioRef.current;
@@ -84,13 +123,13 @@ export default function VoiceMessage({ autoPlay = false }) {
     >
       <audio ref={audioRef} src={audioSrc} preload="auto" />
 
-      {/* Glow ring — pulsing when playing */}
+      {/* Glow ring when playing */}
       {playing && <span className="voice-msg__ring" aria-hidden="true" />}
 
       {/* Avatar */}
       <img src={logo} alt="AWA" className="voice-msg__avatar" />
 
-      {/* Play/Pause */}
+      {/* Play / Pause */}
       <button className="voice-msg__play" aria-hidden="true" tabIndex={-1}>
         {playing ? <PauseIcon /> : <PlayIcon />}
       </button>
@@ -103,7 +142,6 @@ export default function VoiceMessage({ autoPlay = false }) {
             className={[
               'voice-msg__bar',
               i < playedBars ? 'voice-msg__bar--played' : '',
-              // Always animate — gives life even before audio starts
               'voice-msg__bar--animating',
             ].join(' ')}
             style={{ '--bar-h': `${h}px`, '--bar-delay': `${(i % 10) * 55}ms` }}
